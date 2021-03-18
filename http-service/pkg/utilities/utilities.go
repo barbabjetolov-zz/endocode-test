@@ -48,7 +48,7 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 			message = "Hello " + strings.Join(camelcase.Split(name[0]), " ")
 		} else {
 			status = http.StatusOK
-			message = "Hello Strainger"
+			message = "Hello Stranger"
 		}
 	default:
 		status = http.StatusNotFound
