@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/barbabjetolov/endocode-test/http-service/pkg/utilities"
 	log "github.com/sirupsen/logrus"
@@ -16,7 +17,19 @@ func init() {
 
 func main() {
 
+	port, z := os.LookupEnv("LISTENING_PORT")
+
+	if _, err := strconv.Atoi(port); err != nil {
+		log.Fatal(err, "Listening port must be a number")
+	}
+
+	if !z || port == "" {
+		port = "8080"
+	}
+
+	log.Info("Listening on port " + port)
+
 	http.HandleFunc("/helloworld", utilities.HandlerHelloworld)
 	http.HandleFunc("/versionz", utilities.HandlerVersionz)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
