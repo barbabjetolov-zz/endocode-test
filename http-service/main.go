@@ -1,14 +1,20 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 
+	"github.com/barbabjetolov/endocode-test/http-service/pkg/utilities"
 	"github.com/fatih/camelcase"
 	logrus "github.com/sirupsen/logrus"
 )
 
-var gitHash string
+// compile time variables
+var (
+	GitCommit   string
+	ProjectName string
+)
 
 // handler for the /helloworld endpoint
 func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
@@ -30,21 +36,28 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 }
 
 // handler for the /versionz endpoint
-// func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
-// 	switch r.Method {
-// 	case "GET":
-// 		res := &utilities.ResponseVersionz{GitHash: gitHash,
-// 			ProjectName: projectName}
-// 		w.WriteHeader(http.StatusOK)
-// 		w.Write([]byte(`{"git_hash": "get called 2"}`))
-// 	default:
-// 		w.WriteHeader(http.StatusNotFound)
-// 		w.Write([]byte(`Method not found!`))
-// 	}
-// }
+func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		resStruct := &utilities.ResponseVersionz{GitCommit: GitCommit,
+			ProjectName: ProjectName}
+
+		resBytes, err := json.Marshal(resStruct)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(`Internal server error!`))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(resBytes))
+	default:
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(`Method not found!`))
+	}
+}
 
 func main() {
 	http.HandleFunc("/helloworld", HandlerHelloworld)
-	// http.HandleFunc("/versionz", HandlerVersionz)
+	http.HandleFunc("/versionz", HandlerVersionz)
 	logrus.Fatal(http.ListenAndServe(":8080", nil))
 }

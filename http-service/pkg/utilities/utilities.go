@@ -1,6 +1,6 @@
 package utilities
 
 type ResponseVersionz struct {
-	GitHash     string `json:"git_hash"`
+	GitCommit   string `json:"git_commit"`
 	ProjectName string `json:"project_name"`
 }

@@ -1,3 +1,5 @@
+github.com/barbabjetolov/endocode-test v0.0.0-20210318155504-4655c0070eab h1:yAvU/hFxa9/k5hQvaOHtHmVkD8cK2pGQSNW+IdiSaOQ=
+github.com/barbabjetolov/endocode-test/http-service v0.0.0-20210318155504-4655c0070eab h1:Jk47SkyVw9SD5KxrxBBsaJ/WeCKr6mY1ZGq4If7Bbos=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fatih/camelcase v1.0.0 h1:hxNvNX/xYBp0ovncs8WyWZrOrpBNub/JfaMvbURyft8=
