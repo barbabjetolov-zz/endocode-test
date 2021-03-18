@@ -38,15 +38,23 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 	var status int
 	var message string
 
-	defer LogRequest(&status, r)
+	defer LogRequest(&status, &message, r)
 
 	switch r.Method {
 	case "GET":
 		q := r.URL.Query()
-		if name, isIn := q["name"]; isIn {
-			status = http.StatusOK
-			message = "Hello " + strings.Join(camelcase.Split(name[0]), " ")
-		} else {
+		if len(q) > 1 {
+			status = http.StatusBadRequest
+			message = "Invalid request!"
+		} else if len(q) == 1 {
+			if name, isIn := q["name"]; isIn {
+				status = http.StatusOK
+				message = "Hello " + strings.Join(camelcase.Split(name[0]), " ")
+			} else {
+				status = http.StatusBadRequest
+				message = "Invalid request!"
+			}
+		} else if len(q) == 0 {
 			status = http.StatusOK
 			message = "Hello Stranger"
 		}
@@ -64,7 +72,7 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 	var status int
 	var message string
 
-	defer LogRequest(&status, r)
+	defer LogRequest(&status, &message, r)
 
 	switch r.Method {
 	case "GET":
@@ -89,12 +97,13 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 	w = writeResponse(w, message, status)
 }
 
-func LogRequest(status *int, r *http.Request) {
+func LogRequest(status *int, message *string, r *http.Request) {
 
 	log.WithFields(log.Fields{
-		"status": *status,
-		"query":  r.URL.RawQuery,
-	}).Info(r.Method + " " + r.URL.Host + r.URL.Path)
+		"status":  *status,
+		"query":   r.URL.RawQuery,
+		"request": r.Method + " " + r.URL.Host + r.URL.Path,
+	}).Info(*message)
 }
 
 func writeResponse(w http.ResponseWriter, message string, status int) http.ResponseWriter {
