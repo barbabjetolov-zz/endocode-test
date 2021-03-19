@@ -1,10 +1,14 @@
 node {    
+
+    def image
+
     stage('Clone repository') {               
 
         checkout scm    
     } 
+    
     stage('Build image') {         
        
-        sh 'make docker-build TAG=latest'
+        image = docker.build("erizzardi/http-service")
     }
 }
