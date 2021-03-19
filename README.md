@@ -32,5 +32,35 @@ To compile the source code run `make compile`, it will take care of the dependen
 
 The service listens accepts two endpoints:
 
-* **GET /helloworld** - returns "Hello Stranger". It accepts one query parameter, `name`. If set, it returns "Hello $name"
+* **GET /helloworld** - returns "Hello Stranger". It accepts one query parameter, `name`. If set, it returns "Hello $name", sliced by camel case
 * **GET /versionz** - returns a JSON with the hash of the latest commit and the project name
+
+For example, to call the first endpoint, you'd do: 
+```shell
+    curl localhost:8080/helloworld
+```
+
+and the answer will be:
+```
+    Hello Stranger
+```
+
+To use the query funcionality, use this request
+```shell
+    curl localhost:8080/helloworld?name=MarcoRossi
+```
+
+and the answer will be:
+```
+    Hello Marco Rossi
+```
+
+The last endpoint can be contacted with
+```
+    curl localhost:8080/versionz
+```
+
+and the answer will be:
+```
+    {"git_commit":"2d23bd462aa5523a0bdcd272d4958700e3cc6eac","project_name":"http-service"}
+```
