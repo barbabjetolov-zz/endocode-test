@@ -4,9 +4,10 @@ node {
 
     stage('Clone repository') {               
 
-        checkout scm    
+        checkout scm   
+        shell 'ls' 
     } 
-    
+
     stage('Build image') {         
        
         image = docker.build("erizzardi/http-service")
