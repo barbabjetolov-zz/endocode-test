@@ -47,4 +47,4 @@ docker-run:
 docker-clean:
 	docker image prune
 
-docker: docker-build docker-run
+docker: docker-build docker-clean docker-run
