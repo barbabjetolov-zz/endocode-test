@@ -6,8 +6,10 @@ PKGDIR=pkg
 TARGET_BIN=http-service
 TARGET_PACKAGE=*
 
-OUTER_PORT=8080
+HOST_PORT=8080
 CONTAINER_PORT=8080
+
+TAG=latest
 
 
 GOOS=$(shell uname | tr '[:upper:]' '[:lower:]')
@@ -46,9 +48,9 @@ docker-build:
 	docker build -t ${TARGET_BIN} .
 
 docker-run:
-	docker run -dp ${OUTER_PORT}:${CONTAINER_PORT} -it ${TARGET_BIN}:latest
+	docker run -d --name ${TARGET_BIN} -e LISTENING_PORT=${CONTAINER_PORT} -dp ${HOST_PORT}:${CONTAINER_PORT} -it ${TARGET_BIN}:${TAG}
 
 docker-clean:
-	-docker image rm ${TARGET_BIN}:latest
+	-docker image rm ${TARGET_BIN}:${TAG}
 
-docker: docker-clean docker-build docker-run
+docker: docker-build docker-run
