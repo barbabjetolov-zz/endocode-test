@@ -1,4 +1,4 @@
-PROJECT_NAME=$(shell basename `git rev-parse --show-toplevel`)
+PROJECT_NAME=http-service
 GIT_COMMIT=$(shell git rev-list -1 HEAD)
 
 PKGDIR=pkg
@@ -43,5 +43,8 @@ docker-build:
 
 docker-run:
 	docker run -dp ${CONTAINER_PORT}:${OUTER_PORT} -it ${TARGET_BIN}:latest
+
+docker-clean:
+	docker image prune
 
 docker: docker-build docker-run
