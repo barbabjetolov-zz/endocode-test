@@ -1,7 +1,8 @@
 node {    
 
     def image
-
+    agent docker
+    
     stage('Clone repository') {               
 
         checkout scm   
