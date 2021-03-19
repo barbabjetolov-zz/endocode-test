@@ -18,7 +18,7 @@ ENV_VARS=GOOS=${GOOS} GOARCH=${GOARCH}
 # local install
 clean:
 	go clean
-	rm -rf ${TARGET_BIN}
+	-rm -rf ${TARGET_BIN}
 
 install: clean
 	go mod download
