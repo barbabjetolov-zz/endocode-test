@@ -5,6 +5,10 @@ node {
     def GIT_COMMIT
     def PROJECT_NAME="http-service"
 
+    agent {
+        docker { image 'erizzardi/gomagit:latest' } // just an image with golang, make and git
+    }
+
     stage('Clone repository') {               
 
         checkout scm   
