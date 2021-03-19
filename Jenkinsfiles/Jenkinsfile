@@ -14,13 +14,11 @@ node {
         image = docker.build("erizzardi/http-service")
     }
 
-    stage('Test') {
-        image.inside {
-            try {
-                sh 'make test'
-            } catch(err) {
-                throw err
-            }
+    stage('Push image') {
+
+        docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub') {
+        
+            docker.build('erizzardi/http-service').push('latest')
         }
     }
 }
