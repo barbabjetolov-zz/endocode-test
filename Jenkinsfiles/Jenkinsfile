@@ -5,39 +5,40 @@ node {
     def GIT_COMMIT
     def PROJECT_NAME="http-service"
 
-    docker.image("erizzardi/gomagit:latest").withRun {
+
+    stage('Clone repository') {               
+
+        checkout scm 
+
+        GIT_COMMIT = sh(script: 'git rev-list -1 HEAD', returnStdout: true)
+
+    } 
+
+    stage('Test') {
 
 
-        stage('Clone repository') {               
-
-            checkout scm   
-
-            GIT_COMMIT = sh(script: 'git rev-list -1 HEAD', returnStdout: true)
-
-        } 
-
-        stage('Test') {
-
-            try {
-                sh "go test  -ldflags \"	-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.ProjectName=${PROJECT_NAME} \
-                                            -X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.GitCommit=${GIT_COMMIT}\" 	"
-            } catch(err) {
-                throw(err)
-            }
-        }
-
-        stage('Build image') {         
-        
-            image = docker.build("erizzardi/http-service:${BUILD_NUMBER}")
-        }
-
-        stage('Push image') {
-
-            docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
+        docker.image('erizzardi/gomagit:latest').inside("-v ${WORKSPACE}/:/project") { // run unit tests in a container with go, make and git
             
-                docker.build('erizzardi/http-service').push("${BUILD_NUMBER}")
-            }
+            STATUS = sh(script: "make test", returnStatus: true)
         }
 
+        if (STATUS != 0) {
+            error("Unit tests failed! Aborting.")
+        }
     }
+
+    stage('Build image') {         
+    
+        image = docker.build("erizzardi/http-service:${BUILD_NUMBER}")
+    }
+
+    stage('Push image') {
+
+        docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
+        
+            docker.build('erizzardi/http-service').push("${BUILD_NUMBER}")
+        }
+    }
+
+
 }
