@@ -2,17 +2,22 @@ node {
 
     def image
 
+    def GIT_COMMIT
+    def PROJECT_NAME="http-service"
+
     stage('Clone repository') {               
 
         checkout scm   
-        sh "pwd"
-        sh "ls"
+
+        GIT_COMMIT = sh(script: 'git rev-list -1 HEAD', returnStdout: true)
+
     } 
 
     stage('Test') {
 
         try {
-            sh 'make test'
+            sh "go test  -ldflags \"	-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.ProjectName=${PROJECT_NAME} \
+						                -X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.GitCommit=${GIT_COMMIT}\" 	"
         } catch(err) {
             throw(err)
         }
