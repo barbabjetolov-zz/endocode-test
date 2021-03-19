@@ -17,7 +17,7 @@ This repo contains:
 #### with docker
 * docker
 #### local install
-* go 1.13
+* go 1.13 or newer
 * make
 
 ## Building and running
