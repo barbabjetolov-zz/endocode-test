@@ -14,8 +14,9 @@ TAG=latest
 
 GOOS=$(shell uname | tr '[:upper:]' '[:lower:]')
 GOARCH=amd64
+CGO=0
 
-ENV_VARS=GOOS=${GOOS} GOARCH=${GOARCH}
+ENV_VARS=GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=${CGO}
 
 .PHONY: test
 
@@ -36,10 +37,10 @@ run:
 	./${TARGET_BIN}
 
 test:
-	go test -ldflags "	-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.ProjectName=${PROJECT_NAME} \
-						-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.GitCommit=${GIT_COMMIT} 	\
-						-w -s" \
-						./${PKGDIR}/${TARGET_PACKAGE} 
+	env ${ENV_VARS} go test -ldflags "	-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.ProjectName=${PROJECT_NAME} \
+										-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.GitCommit=${GIT_COMMIT} 	\
+										-w -s" \
+										./${PKGDIR}/${TARGET_PACKAGE} 
 
 
 all: test compile run
