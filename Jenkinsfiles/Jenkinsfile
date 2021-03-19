@@ -2,11 +2,6 @@ node {
 
     def image
 
-    parameters {
-
-        string(name: 'TAG', defaultValue: 'latest', description: 'tag for the docker image')
-    }
-
     stage('Clone repository') {               
 
         checkout scm   
@@ -16,14 +11,14 @@ node {
 
     stage('Build image') {         
        
-        image = docker.build("erizzardi/http-service:${params.TAG}")
+        image = docker.build("erizzardi/http-service:${BUILD_NUMBER}")
     }
 
     stage('Push image') {
 
         docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
         
-            docker.build('erizzardi/http-service').push("${params.TAG}")
+            docker.build('erizzardi/http-service').push("${BUILD_NUMBER}")
         }
     }
 }
