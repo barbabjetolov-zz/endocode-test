@@ -38,7 +38,7 @@ test:
 						./${PKGDIR}/${TARGET_PACKAGE} 
 
 
-all: test compile
+all: test compile run
 
 
 #docker
