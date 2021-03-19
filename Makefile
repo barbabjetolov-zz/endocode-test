@@ -17,6 +17,8 @@ GOARCH=amd64
 
 ENV_VARS=GOOS=${GOOS} GOARCH=${GOARCH}
 
+.PHONY: test
+
 # local install
 clean:
 	go clean
