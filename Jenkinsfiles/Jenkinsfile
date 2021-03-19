@@ -9,6 +9,15 @@ node {
         sh "ls"
     } 
 
+    stage('Test') {
+
+        try {
+            sh 'make test'
+        } catch(err) {
+            throw(err)
+        }
+    }
+
     stage('Build image') {         
        
         image = docker.build("erizzardi/http-service:${BUILD_NUMBER}")
