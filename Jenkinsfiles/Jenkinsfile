@@ -5,7 +5,7 @@ node {
     def GIT_COMMIT
     def PROJECT_NAME="http-service"
 
-    docker.image("erizzardi/gomagit:latest").withRun (
+    docker.image("erizzardi/gomagit:latest").withRun {
 
 
         stage('Clone repository') {               
@@ -39,5 +39,5 @@ node {
             }
         }
 
-    )
+    }
 }
