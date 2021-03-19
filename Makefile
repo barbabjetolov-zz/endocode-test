@@ -18,8 +18,6 @@ CGO=0
 
 ENV_VARS=GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=${CGO}
 
-.PHONY: test
-
 # local install
 clean:
 	go clean
