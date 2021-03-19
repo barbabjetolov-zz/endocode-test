@@ -74,21 +74,28 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 
 	defer LogRequest(&status, &message, r)
 
+	q := r.URL.Query()
+
 	switch r.Method {
 	case "GET":
-		resStruct := &ResponseVersionz{GitCommit: GitCommit,
-			ProjectName: ProjectName}
+		if len(q) != 0 {
+			status = http.StatusBadRequest
+			message = "Invalid request!"
+		} else {
+			resStruct := &ResponseVersionz{GitCommit: GitCommit,
+				ProjectName: ProjectName}
 
-		resBytes, err := json.Marshal(resStruct)
-		if err != nil {
+			resBytes, err := json.Marshal(resStruct)
+			if err != nil {
 
-			status = http.StatusInternalServerError
-			message = "Internal Server Error!"
+				status = http.StatusInternalServerError
+				message = "Internal Server Error!"
 
-			break
+				break
+			}
+			status = http.StatusOK
+			message = string(resBytes)
 		}
-		status = http.StatusOK
-		message = string(resBytes)
 	default:
 		status = http.StatusNotFound
 		message = "Method not found!"
