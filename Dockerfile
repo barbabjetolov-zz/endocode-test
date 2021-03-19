@@ -3,20 +3,26 @@ FROM golang:alpine AS builder
 # download necessary packages
 RUN apk add git make
 
-RUN unset GOPATH
+ENV GO111MODULE=on
 
-# copy everything from project dir
+WORKDIR /
+
+# copy everything from project directory
 COPY . .
 
 # download dependencies
-# RUN go mod download
+RUN go mod download
+
 
 # compile binary
 RUN make compile
+RUN chmod 111 http-service
+
+# ENTRYPOINT [ "/http-service" ]
 
 #-------------------#
-FROM scratch
+FROM alpine:latest
 
-COPY --from=builder http-service /http-service
+COPY --from=builder /http-service /http-service
 
 ENTRYPOINT [ "/http-service" ]
