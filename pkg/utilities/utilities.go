@@ -3,6 +3,7 @@ package utilities
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/fatih/camelcase"
@@ -39,6 +40,7 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 	var message string
 
 	defer LogRequest(&status, &message, r)
+	defer writeResponse(&status, &message, w)
 
 	switch r.Method {
 	case "GET":
@@ -48,6 +50,14 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 			message = "Invalid request!"
 		} else if len(q) == 1 {
 			if name, isIn := q["name"]; isIn {
+
+				if !isWord(name[0]) {
+					status = http.StatusBadRequest
+					message = "Invalid Request!"
+
+					break
+				}
+
 				status = http.StatusOK
 				message = "Hello " + strings.Join(camelcase.Split(name[0]), " ")
 			} else {
@@ -62,8 +72,6 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusNotFound
 		message = "Method not found!"
 	}
-
-	w = writeResponse(w, message, status)
 }
 
 // handler for the /versionz endpoint
@@ -73,6 +81,7 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 	var message string
 
 	defer LogRequest(&status, &message, r)
+	defer writeResponse(&status, &message, w)
 
 	q := r.URL.Query()
 
@@ -100,10 +109,9 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusNotFound
 		message = "Method not found!"
 	}
-
-	w = writeResponse(w, message, status)
 }
 
+// function that logs every served request
 func LogRequest(status *int, message *string, r *http.Request) {
 
 	log.WithFields(log.Fields{
@@ -113,10 +121,13 @@ func LogRequest(status *int, message *string, r *http.Request) {
 	}).Info(*message)
 }
 
-func writeResponse(w http.ResponseWriter, message string, status int) http.ResponseWriter {
+func writeResponse(status *int, message *string, w http.ResponseWriter) {
 
-	w.WriteHeader(status)
-	w.Write([]byte(message))
+	w.WriteHeader(*status)
+	w.Write([]byte(*message))
+}
 
-	return w
+func isWord(s string) bool {
+
+	return regexp.MustCompile(`^[a-zA-Z]+$`).MatchString(s)
 }
