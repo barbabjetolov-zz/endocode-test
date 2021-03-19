@@ -46,7 +46,7 @@ docker-build:
 	docker build -t ${TARGET_BIN} .
 
 docker-run:
-	docker run -dp ${CONTAINER_PORT}:${OUTER_PORT} -it ${TARGET_BIN}:latest
+	docker run -dp ${OUTER_PORT}:${CONTAINER_PORT} -it ${TARGET_BIN}:latest
 
 docker-clean:
 	-docker image rm ${TARGET_BIN}:latest
