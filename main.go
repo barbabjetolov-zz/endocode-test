@@ -19,11 +19,12 @@ func main() {
 
 	port, z := os.LookupEnv("LISTENING_PORT")
 
-	if _, err := strconv.Atoi(port); err != nil {
-		log.Fatal(err, "Listening port must be a number")
+	if z {
+		if _, err := strconv.Atoi(port); err != nil {
+			log.Fatal(err, ": Listening port must be a number")
+		}
 	}
-
-	if !z || port == "" {
+	if port == "" {
 		port = "8080"
 	}
 
