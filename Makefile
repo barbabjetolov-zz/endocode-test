@@ -45,7 +45,7 @@ all: test compile run
 
 #docker
 docker-build:
-	docker build -t ${TARGET_BIN} .
+	docker build -t ${TARGET_BIN}:${TAG} .
 
 docker-run:
 	docker run -d --name ${TARGET_BIN} -e LISTENING_PORT=${CONTAINER_PORT} -dp ${HOST_PORT}:${CONTAINER_PORT} -it ${TARGET_BIN}:${TAG}

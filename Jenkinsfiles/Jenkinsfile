@@ -1,6 +1,10 @@
 node {    
-      stage('Clone repository') {               
-             
-            checkout scm    
-      } 
+    stage('Clone repository') {               
+
+        checkout scm    
+    } 
+    stage('Build image') {         
+       
+        sh 'make docker-build TAG=latest'
+    }
 }
