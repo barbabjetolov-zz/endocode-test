@@ -1,15 +1,5 @@
 node {    
 
-    def image
-
-    def GIT_COMMIT
-    def PROJECT_NAME="${env.SERVICE}"
-    def TAG
-
-    def K8TOKEN = credentials('k8token')
-
-    def KUBECTL="kubectl --kubeconfig=/dev/null --token=${K8TOKEN} --server=${env.CLUSTER_ENDPOINT} -n ${env.NAMESPACE}"
-
     properties ([
         parameters ([
 
@@ -20,7 +10,17 @@ node {
         ])
     ])
 
-    print(K8TOKEN)
+    def IMAGE
+
+    def GIT_COMMIT
+    def PROJECT_NAME="${env.SERVICE}"
+    def TAG
+
+    def K8TOKEN = credentials('k8token')
+
+    def KUBECTL="kubectl -n ${env.NAMESPACE}"
+
+    print(KUBECTL)
 
 
     if (env.TAG == "") {
@@ -51,7 +51,7 @@ node {
 
     stage('Build image') {         
     
-        image = docker.build("erizzardi/${env.SERVICE}:${TAG}")
+        IMAGE = docker.build("erizzardi/${env.SERVICE}:${TAG}")
     }
 
     stage('Push image') {
@@ -65,7 +65,7 @@ node {
     stage('Deploy service to K8 cluster') {
 
         // // create deployment
-        // sh "${KUBECTL} apply -f kubernetes/templates/deployments/${env.SERVICE}.yaml"
+        sh "${KUBECTL} apply -f kubernetes/templates/deployments/${env.SERVICE}.yaml"
         // // patch the yml to include the build number in the metadata
         // sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\"metadata\":{\"labels\":{\"build_number\":\"${BUILD_NUMBER}\"}}}\""
         // // create the service
