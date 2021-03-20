@@ -18,7 +18,7 @@ node {
 
     def K8TOKEN = credentials('k8token')
 
-    def KUBECTL="kubectl -n ${env.NAMESPACE}"
+    def KUBECTL="kubectl --insecure-skip-tls-verify -n ${env.NAMESPACE}"
 
     print(KUBECTL)
 
