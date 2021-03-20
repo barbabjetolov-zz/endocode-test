@@ -22,3 +22,4 @@ spec:
         env:
           - name: LISTENING_PORT
             value: "8081"
+      terminationGracePeriodSeconds: 30
