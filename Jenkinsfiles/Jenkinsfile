@@ -58,7 +58,7 @@ node {
 
     stage('Deploy service to K8 cluster') {
 
-        sh "kubectl apply -f kubernetes/templates/deployments/${env.SERVICE}"
+        sh "kubectl apply --server ${env.CLUSTER_ENDPOINT} -n ${env.NAMESPACE} -f kubernetes/templates/deployments/${env.SERVICE}"
     }
 
 
