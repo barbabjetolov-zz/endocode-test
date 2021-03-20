@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-service
+  labels:
+    app: http-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-service
+  template:
+    metadata:
+      labels:
+        app: http-service
+    spec:
+      containers:
+      - name: http-service
+        image: erizzardi/http-service:66
+        ports:
+        - containerPort: 8081
+        env:
+          - name: LISTENING_PORT
+            value: "8081"
+      terminationGracePeriodSeconds: 30
