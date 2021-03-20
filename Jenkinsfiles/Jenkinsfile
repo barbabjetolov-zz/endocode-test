@@ -68,13 +68,13 @@ node {
     stage('Deploy service to K8 cluster') {
 
         // change image tag in the deployment.yaml file
-        sh "sed \'0,/{TAG}/s//${BUILD_NUMBER}/\' kubernetes/deployments/${env.SERVICE}.yaml"
+        DEPLOYMENT = sh( script: "sed \'0,/{TAG}/s//${TAG}/\' kubernetes/deployments/${env.SERVICE}.yaml", returnStdout: true)
 
-        // // create deployment
-        sh "${KUBECTL} apply -f kubernetes/deployments/${env.SERVICE}.yaml"
-        // // patch the yml to include the build number in the metadata
+        // create deployment
+        sh "${KUBECTL} apply -f ${DEPLOYMENT}"
+        // patch the yml to include the build number in the metadata
         sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\\\"metadata\\\":{\\\"labels\\\":{\\\"build_number\\\":\\\"${BUILD_NUMBER}\\\"}}}\""
-        // // create the service
-        sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
+        // create the service
+        // sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
     }
 }
