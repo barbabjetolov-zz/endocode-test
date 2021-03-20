@@ -28,6 +28,9 @@ node {
         TAG = BUILD_NUMBER
     }
 
+    // clean workspace before starting operations
+    wsClean()
+
 
     stage('Clone repository') {               
 
@@ -63,6 +66,9 @@ node {
     }
 
     stage('Deploy service to K8 cluster') {
+
+        // change image tag in the deployment.yaml file
+        sh "sed \'0,/{TAG}/s//${BUILD_NUMBER}/\' kubernetes/deployments/${env.SERVICE}.yaml"
 
         // // create deployment
         sh "${KUBECTL} apply -f kubernetes/deployments/${env.SERVICE}.yaml"

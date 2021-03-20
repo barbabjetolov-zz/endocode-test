@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: http-service
-        image: erizzardi/http-service:66
+        image: erizzardi/http-service:{TAG}
         ports:
         - containerPort: 8081
         env:
