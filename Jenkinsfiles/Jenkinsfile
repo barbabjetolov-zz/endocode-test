@@ -6,7 +6,9 @@ node {
     def PROJECT_NAME="${env.SERVICE}"
     def TAG
 
-    def KUBECTL="kubectl --server ${env.CLUSTER_ENDPOINT} -n ${env.NAMESPACE}"
+    def K8TOKEN = credentials('k8token')
+
+    def KUBECTL="kubectl --kubeconfig=/dev/null --token=${K8TOKEN} --server=${env.CLUSTER_ENDPOINT} -n ${env.NAMESPACE}"
 
     properties ([
         parameters ([
