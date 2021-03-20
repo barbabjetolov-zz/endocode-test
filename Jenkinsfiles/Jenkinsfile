@@ -3,7 +3,24 @@ node {
     def image
 
     def GIT_COMMIT
-    def PROJECT_NAME="http-service"
+    def PROJECT_NAME="${env.SERVICE}"
+    def TAG
+
+    parameters (
+        [
+
+            string(name: 'SERVICE', description: 'Service to be built/deployed'),
+            string(name: 'NAMESPACE', defaultValue: 'default', description: 'K8 namespace to deploy the service to'),
+            string(name: 'CLUSTER_ENDPOINT', description: 'K8 cluster endpoint'),
+            string(name: 'TAG', description: 'Docker image tag. If left empty, it equals to the build number'),
+        ]
+    )
+
+
+    if (env.TAG == "") {
+
+        TAG = BUILD_NUMBER
+    }
 
 
     stage('Clone repository') {               
@@ -15,7 +32,6 @@ node {
     } 
 
     stage('Test') {
-
 
         docker.image('erizzardi/gomagit:latest').inside("-v ${WORKSPACE}/:/project") { // run unit tests in a container with go, make and git
             
@@ -29,15 +45,20 @@ node {
 
     stage('Build image') {         
     
-        image = docker.build("erizzardi/http-service:${BUILD_NUMBER}")
+        image = docker.build("erizzardi/${env.SERVICE}:${TAG}")
     }
 
     stage('Push image') {
 
         docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
         
-            docker.build('erizzardi/http-service').push("${BUILD_NUMBER}")
+            docker.build("erizzardi/${env.SERVICE}").push("${TAG}")
         }
+    }
+
+    stage('Deploy service to K8 cluster') {
+
+        sh "kubectl apply -f kubernetes/templates/deployments/${env.SERVICE}"
     }
 
 
