@@ -29,7 +29,7 @@ node {
     }
 
     // clean workspace before starting operations
-    wsClean()
+    cleanWs()
 
 
     stage('Clone repository') {               
