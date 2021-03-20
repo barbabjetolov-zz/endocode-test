@@ -6,15 +6,15 @@ node {
     def PROJECT_NAME="${env.SERVICE}"
     def TAG
 
-    parameters (
-        [
+    properties ([
+        parameters ([
 
-            string(name: 'SERVICE', description: 'Service to be built/deployed'),
-            string(name: 'NAMESPACE', defaultValue: 'default', description: 'K8 namespace to deploy the service to'),
-            string(name: 'CLUSTER_ENDPOINT', description: 'K8 cluster endpoint'),
-            string(name: 'TAG', description: 'Docker image tag. If left empty, it equals to the build number'),
-        ]
-    )
+                string(name: 'SERVICE', description: 'Service to be built/deployed'),
+                string(name: 'NAMESPACE', defaultValue: 'default', description: 'K8 namespace to deploy the service to'),
+                string(name: 'CLUSTER_ENDPOINT', description: 'K8 cluster endpoint'),
+                string(name: 'TAG', description: 'Docker image tag. If left empty, it equals to the build number'),
+        ])
+    ])
 
 
     if (env.TAG == "") {
