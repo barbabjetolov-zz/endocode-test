@@ -20,6 +20,8 @@ node {
         ])
     ])
 
+    print(K8TOKEN)
+
 
     if (env.TAG == "") {
 
@@ -62,11 +64,11 @@ node {
 
     stage('Deploy service to K8 cluster') {
 
-        // create deployment
-        sh "${KUBECTL} apply -f kubernetes/templates/deployments/${env.SERVICE}.yaml"
-        // patch the yml to include the build number in the metadata
-        sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\"metadata\":{\"labels\":{\"build_number\":\"${BUILD_NUMBER}\"}}}\""
-        // create the service
-        sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
+        // // create deployment
+        // sh "${KUBECTL} apply -f kubernetes/templates/deployments/${env.SERVICE}.yaml"
+        // // patch the yml to include the build number in the metadata
+        // sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\"metadata\":{\"labels\":{\"build_number\":\"${BUILD_NUMBER}\"}}}\""
+        // // create the service
+        // sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
     }
 }
