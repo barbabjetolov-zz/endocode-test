@@ -6,6 +6,8 @@ node {
     def PROJECT_NAME="${env.SERVICE}"
     def TAG
 
+    def KUBECTL="kubectl --server ${env.CLUSTER_ENDPOINT} -n ${env.NAMESPACE}"
+
     properties ([
         parameters ([
 
@@ -58,8 +60,11 @@ node {
 
     stage('Deploy service to K8 cluster') {
 
-        sh "kubectl apply --server ${env.CLUSTER_ENDPOINT} -n ${env.NAMESPACE} -f kubernetes/templates/deployments/${env.SERVICE}"
+        // create deployment
+        sh "${KUBECTL} apply -f kubernetes/templates/deployments/${env.SERVICE}"
+        // patch the yml to include the build number in the metadata
+        sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\"metadata\":{\"labels\":{\"build_number\":\"${BUILD_NUMBER}\"}}}\""
+        // create the service
+        sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
     }
-
-
 }
