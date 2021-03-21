@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentName }}
+  labels:
+    app: {{ .Values.deploymentName }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deploymentName }}
+    spec:
+      containers:
+      - name: {{ .Values.deploymentName }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ports.containerPort }}
+        env:
+          - name: LISTENING_PORT
+            value: "{{ .Values.ports.listeningPort }}"
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}

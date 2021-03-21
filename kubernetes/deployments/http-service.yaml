@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: http-service
-        image: erizzardi/http-service:{TAG}
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8081
         env:
