@@ -72,7 +72,7 @@ node {
     stage('Deploy service to K8 cluster') {
 
         // deploy to k8 cluster with helm
-        docker.image('alpine/helm:latest').inside("-v ${WORKSPACE}/:/project") {
+        docker.image('alpine/helm:latest').inside("-v ${WORKSPACE}/:/project --entrypoint=''") {
 
             sh "helm upgrade --install ${env.SERVICE} ./project/${env.SERVICE}-chart --set service.type=NodePort --insecure-skip-tls-verify --set image.tag=${TAG}"
         }
