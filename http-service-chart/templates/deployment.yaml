@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.deploymentName }}
   labels:
     app: {{ .Values.deploymentName }}
+    build_number: {{ .Values.buildNumber }} # jenkins build number
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.deploymentName }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }} # the tag is passed from cli in jenkins
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.ports.containerPort }}
