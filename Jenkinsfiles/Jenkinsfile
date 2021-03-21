@@ -32,7 +32,7 @@ node {
 
     stage('Clone repository') {               
 
-        checkout scm 
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '58d47cc6-9619-4aeb-a9bc-2c91f0aa74fb', url: 'git@github.com:barbabjetolov/endocode-test.git']]])
 
         GIT_COMMIT = sh(script: 'git rev-list -1 HEAD', returnStdout: true)
 
@@ -63,7 +63,7 @@ node {
     // push image to dockerhub
     stage('Push image') {
 
-        docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
+        docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub') {
         
             docker.build("erizzardi/${env.SERVICE}").push("${TAG}")
         }
@@ -71,25 +71,14 @@ node {
 
     stage('Deploy service to K8 cluster') {
 
-        // deploy to k8 cluster with helm
-        docker.image('alpine/helm:latest').inside("-v ${WORKSPACE}/:/project --entrypoint=''") {
-
-            sh "helm upgrade --install ${env.SERVICE} ./project/${env.SERVICE}-chart --set service.type=NodePort --insecure-skip-tls-verify \
-                --kube-apiserver=${K8SERVER}    \
-                --kube-token=${K8TOKEN} \
-                --set image.tag=${TAG}  \
-                --set buildNumber=${BUILD_NUMBER}"
+        try {
+            
+            sh "helm --set=\"image.tag=${TAG}\" --set=\"buildNumber=${BUILD_NUMBER}\" --kubeconfig=\"/minikube/config\" --kube-context=minikube install ${env.SERVICE} ./${env.SERVICE}-chart"
+        } catch (err){
+            
+            print(err)
+            sh "helm --set=\"image.tag=${TAG}\" --set=\"buildNumber=${BUILD_NUMBER}\" --kubeconfig=\"/minikube/config\" --kube-context=minikube upgrade --install ${env.SERVICE} ./${env.SERVICE}-chart"
         }
-
-        // change image tag in the deployment.yaml file
-        // sh "sed -i \'s:{TAG}:${TAG}:g\' kubernetes/deployments/${env.SERVICE}.yaml"
-
-        // create deployment
-        // sh "${KUBECTL} apply -f kubernetes/deployments/${env.SERVICE}.yaml"
-        // patch the yml to include the build number in the metadata
-        // sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\\\"metadata\\\":{\\\"labels\\\":{\\\"build_number\\\":\\\"${BUILD_NUMBER}\\\"}}}\""
-        // create the service
-        // sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
     }
 
     // clean workspace at the end of operations
