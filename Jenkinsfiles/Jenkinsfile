@@ -5,7 +5,6 @@ node {
 
                 string(name: 'SERVICE', description: 'Service to be built/deployed'),
                 string(name: 'NAMESPACE', defaultValue: 'default', description: 'K8 namespace to deploy the service to'),
-                string(name: 'CLUSTER_ENDPOINT', description: 'K8 cluster endpoint'),
                 string(name: 'TAG', description: 'Docker image tag. If left empty, it equals to the build number'),
         ])
     ])
@@ -17,10 +16,9 @@ node {
     def TAG
 
     def K8TOKEN = credentials('k8token')
+    def K8SERVER = credentials('k8server')
 
-    def KUBECTL="kubectl --insecure-skip-tls-verify -n ${env.NAMESPACE}"
-
-    print(KUBECTL)
+    // def KUBECTL="kubectl --insecure-skip-tls-verify --token=${K8TOKEN} --server=${K8SERVER} -n ${env.NAMESPACE} --kubeconfig=/dev/null"
 
 
     if (env.TAG == "") {
@@ -38,9 +36,9 @@ node {
 
         GIT_COMMIT = sh(script: 'git rev-list -1 HEAD', returnStdout: true)
 
-    } 
+    }
 
-    stage('Test') {
+    stage('Unit Tests') {
 
         docker.image('erizzardi/gomagit:latest').inside("-v ${WORKSPACE}/:/project") { // run unit tests in a container with go, make and git
             
@@ -52,11 +50,17 @@ node {
         }
     }
 
+    stage('Non-regression Tests') {
+
+        // add non-regression tests!!
+    }
+
     stage('Build image') {         
     
         IMAGE = docker.build("erizzardi/${env.SERVICE}:${TAG}")
     }
 
+    // push image to dockerhub
     stage('Push image') {
 
         docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
@@ -67,14 +71,23 @@ node {
 
     stage('Deploy service to K8 cluster') {
 
+        // deploy to k8 cluster with helm
+        docker.image('alpine/helm:latest').inside("-v ${WORKSPACE}/:/project") {
+
+            sh "helm upgrade --install ${env.SERVICE} ./project/${env.SERVICE}-chart --set service.type=NodePort --insecure-skip-tls-verify --set image.tag=${TAG}"
+        }
+
         // change image tag in the deployment.yaml file
-        sh "sed -i \'s:{TAG}:${TAG}:g\' kubernetes/deployments/${env.SERVICE}.yaml"
+        // sh "sed -i \'s:{TAG}:${TAG}:g\' kubernetes/deployments/${env.SERVICE}.yaml"
 
         // create deployment
-        sh "${KUBECTL} apply -f kubernetes/deployments/${env.SERVICE}.yaml"
+        // sh "${KUBECTL} apply -f kubernetes/deployments/${env.SERVICE}.yaml"
         // patch the yml to include the build number in the metadata
-        sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\\\"metadata\\\":{\\\"labels\\\":{\\\"build_number\\\":\\\"${BUILD_NUMBER}\\\"}}}\""
+        // sh "${KUBECTL} patch deployment ${env.SERVICE} --patch \"{\\\"metadata\\\":{\\\"labels\\\":{\\\"build_number\\\":\\\"${BUILD_NUMBER}\\\"}}}\""
         // create the service
         // sh "${KUBECTL} expose deployment ${env.SERVICE} --type=NodePort --name=${env.SERVICE}"
     }
+
+    // clean workspace at the end of operations
+    cleanWs()
 }
