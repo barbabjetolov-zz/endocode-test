@@ -74,7 +74,11 @@ node {
         // deploy to k8 cluster with helm
         docker.image('alpine/helm:latest').inside("-v ${WORKSPACE}/:/project --entrypoint=''") {
 
-            sh "helm upgrade --install ${env.SERVICE} ./project/${env.SERVICE}-chart --set service.type=NodePort --insecure-skip-tls-verify --set image.tag=${TAG}"
+            sh "helm upgrade --install ${env.SERVICE} ./project/${env.SERVICE}-chart --set service.type=NodePort --insecure-skip-tls-verify \
+                --kube-apiserver=${K8SERVER}    \
+                --kube-token=${K8TOKEN} \
+                --set image.tag=${TAG}  \
+                --set buildNumber=${BUILD_NUMBER}"
         }
 
         // change image tag in the deployment.yaml file
