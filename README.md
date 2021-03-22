@@ -61,3 +61,7 @@ and the answer will be:
 ```
     {"git_commit":"2d23bd462aa5523a0bdcd272d4958700e3cc6eac","project_name":"http-service"}
 ```
+
+## Deploy
+This service can be deployed in an existing kubernetes cluster using the provided jenkinsfile. The cluster IP has to be set manually in the `main.tf` file. This plan also requires certificates to authenticate to the cluster.
+The helm chart contains templates to create a service, a deployment and an nginx-ingress that allows communication with the service. 
