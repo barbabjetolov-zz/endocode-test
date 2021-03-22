@@ -4,7 +4,6 @@ node {
         parameters ([
 
                 string(name: 'SERVICE', description: 'Service to be built/deployed'),
-                string(name: 'NAMESPACE', defaultValue: 'default', description: 'K8 namespace to deploy the service to'),
                 string(name: 'TAG', description: 'Docker image tag. If left empty, it equals to the build number'),
         ])
     ])
@@ -14,11 +13,6 @@ node {
     def GIT_COMMIT
     def PROJECT_NAME="${env.SERVICE}"
     def TAG
-
-    def K8TOKEN = credentials('k8token')
-    def K8SERVER = credentials('k8server')
-
-    // def KUBECTL="kubectl --insecure-skip-tls-verify --token=${K8TOKEN} --server=${K8SERVER} -n ${env.NAMESPACE} --kubeconfig=/dev/null"
 
 
     if (env.TAG == "") {
@@ -40,7 +34,7 @@ node {
 
     stage('Unit Tests') {
 
-        docker.image('erizzardi/gomagit:latest').inside("-v ${WORKSPACE}/:/project") { // run unit tests in a container with go, make and git
+        docker.image('erizzardi/gomagit:latest').inside { // run unit tests in a container with go, make and git
             
             STATUS = sh(script: "make test", returnStatus: true)
         }
@@ -69,6 +63,7 @@ node {
         }
     }
 
+    // deploy service to k8 cluster - requires authentication!
     stage('Deploy service to K8 cluster') {
 
         docker.image("hashicorp/terraform:light").inside("--net=\'host\' --entrypoint=\'\'") {
