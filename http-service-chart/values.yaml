@@ -1,7 +1,3 @@
-# Default values for http-service-chart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 deploymentName: "http-service"
 
 replicaCount: 1
@@ -9,11 +5,14 @@ replicaCount: 1
 image:
   repository: erizzardi/http-service
   pullPolicy: IfNotPresent
+  tag: latest
 
 ports:
   containerPort: 8081
   listeningPort: 8081
 
+ingress:
+  name: "nginx-ingress"
 
 terminationGracePeriodSeconds: 30
 
@@ -29,4 +28,3 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-

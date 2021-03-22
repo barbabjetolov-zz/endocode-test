@@ -4,7 +4,6 @@ metadata:
   name: {{ .Values.deploymentName }}
   labels:
     app: {{ .Values.deploymentName }}
-    build_number: "{{ .Values.buildNumber }}" # jenkins build number
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
