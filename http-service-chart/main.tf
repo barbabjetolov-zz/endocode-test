@@ -12,4 +12,9 @@ provider "helm" {
 resource "helm_release" "complete" {
     name    = "http-request"
     chart   = "/http-request-chart"
+
+    set {
+        name    = "service.type"
+        value   = "ClusterIP"
+    }
 }
