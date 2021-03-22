@@ -71,13 +71,12 @@ node {
 
     stage('Deploy service to K8 cluster') {
 
-        try {
+        docker.image("hashicorp/terraform:light").inside("--net=\'host\' --entrypoint=\'\'") {
             
-            sh "helm --set=\"image.tag=${TAG}\" --set=\"buildNumber=${BUILD_NUMBER}\" --kubeconfig=\"/minikube/config\" --kube-context=minikube install ${env.SERVICE} ./${env.SERVICE}-chart"
-        } catch (err){
             
-            print(err)
-            sh "helm --set=\"image.tag=${TAG}\" --set=\"buildNumber=${BUILD_NUMBER}\" --kubeconfig=\"/minikube/config\" --kube-context=minikube upgrade --install ${env.SERVICE} ./${env.SERVICE}-chart"
+            sh "terraform init"
+            sh "terraform plan"
+            sh "terraform apply --auto-approve"
         }
     }
 
