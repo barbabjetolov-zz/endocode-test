@@ -87,9 +87,12 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		if len(q) != 0 {
+		if len(q) > 100 {
 			status = http.StatusBadRequest
-			message = "Invalid request!"
+			message = "Invalid request! Query string too long!"
+		} else if len(q) != 0 {
+			status = http.StatusBadRequest
+			message = "Invalid request! Empty query!"
 		} else {
 			resStruct := &ResponseVersionz{GitCommit: GitCommit,
 				ProjectName: ProjectName}

@@ -39,7 +39,7 @@ func TestHelloname(t *testing.T) {
 	name := "EdoardoRizzardi"
 	want := "Hello " + strings.Join(camelcase.Split(name), " ")
 
-	request, err := http.NewRequest(http.MethodGet, "helloworld", nil)
+	request, err := http.NewRequest(http.MethodGet, "/helloworld", nil)
 	if err != nil {
 		t.Error(err)
 	}
