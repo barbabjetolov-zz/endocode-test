@@ -3,7 +3,7 @@ namespace: logging
 
 daemonSet:
   env:
-    elasticsearchHost: "elasticsearch-master.{{ .Values.namespace }}.svc.cluster.local"
+    elasticsearchHost: "elasticsearch-master.fluentd.svc.cluster.local"
     elasticsearchPort: "9200"
     elasticsearchScheme: "http"
     fluentdSystemdConf: disable
