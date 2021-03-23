@@ -24,20 +24,20 @@ spec:
         image: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
-            value: {{ .Values.daemonSet.env.elasticsearchHost }}
+            value: "{{ .Values.daemonSet.env.elasticsearchHost }}"
           - name:  FLUENT_ELASTICSEARCH_PORT
-            value: {{ .Values.daemonSet.env.elasticsearchPort }}
+            value: "{{ .Values.daemonSet.env.elasticsearchPort }}"
           - name: FLUENT_ELASTICSEARCH_SCHEME
-            value: {{ .Values.daemonSet.env.elasticsearchScheme }}
+            value: "{{ .Values.daemonSet.env.elasticsearchScheme }}"
           - name: FLUENTD_SYSTEMD_CONF
-            value: {{ .Values.daemonSet.env.fluentdSystemdConf }}
+            value: "{{ .Values.daemonSet.env.fluentdSystemdConf }}"
         volumeMounts:
         - name: varlog
           mountPath: /var/log
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
       - name: varlog
         hostPath:
