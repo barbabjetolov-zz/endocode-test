@@ -63,5 +63,9 @@ and the answer will be:
 ```
 
 ## Deploy
-This service can be deployed in an existing kubernetes cluster using the provided jenkinsfile. The cluster IP has to be set manually in the `main.tf` file. This plan also requires certificates to authenticate to the cluster.
+This service can be deployed in an existing kubernetes cluster using the provided jenkinsfile. The cluster IP has to be set manually in the `main.tf` file.
+
 The helm chart contains templates to create a service, a deployment and an nginx-ingress that allows communication with the service. 
+
+## Logging
+The repo has a terraform file, `main_ekf`, that contains instructions to install an EKF stack in the kubernetes cluster. It's based on the official elastic helm charts for [Kibana](https://github.com/elastic/helm-charts/tree/6.5.2-alpha1/kibana) and [Elasticsearch](https://github.com/elastic/helm-charts/blob/6.5.2-alpha1/elasticsearch/README.md), plus a custom chart for Fluentd, `fluentd-chart`. Kibana is set to be listening on the cluster port 5601, so port-forwarding is required to access the UI. 
