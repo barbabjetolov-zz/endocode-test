@@ -1,42 +1,36 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: fluentd
-  namespace: logging
+  name: {{ .Values.deploymentName }}
+  namespace: {{ .Values.namespace }}
   labels:
-    app: fluentd
+    app: {{ .Values.deploymentName }}
 spec:
   selector:
     matchLabels:
-      app: fluentd
+      app: {{ .Values.deploymentName }}
   template:
     metadata:
       labels:
-        app: fluentd
+        app: {{ .Values.deploymentName }}
     spec:
-      serviceAccount: fluentd
-      serviceAccountName: fluentd
+      serviceAccount: {{ .Values.deploymentName }}
+      serviceAccountName: {{ .Values.deploymentName }}
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       containers:
-      - name: fluentd
+      - name: {{ .Values.deploymentName }}
         image: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
-            value: "elasticsearch-master.logging.svc.cluster.local"
+            value: {{ .Values.daemonSet.env.elasticsearchHost }}
           - name:  FLUENT_ELASTICSEARCH_PORT
-            value: "9200"
+            value: {{ .Values.daemonSet.env.elasticsearchPort }}
           - name: FLUENT_ELASTICSEARCH_SCHEME
-            value: "http"
+            value: {{ .Values.daemonSet.env.elasticsearchScheme }}
           - name: FLUENTD_SYSTEMD_CONF
-            value: disable
-        resources:
-          limits:
-            memory: 512Mi
-          requests:
-            cpu: 100m
-            memory: 200Mi
+            value: {{ .Values.daemonSet.env.fluentdSystemdConf }}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
