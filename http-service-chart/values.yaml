@@ -12,7 +12,8 @@ ports:
   listeningPort: 8081
 
 ingress:
-  name: "nginx-ingress"
+  name: nginx-ingress
+  hostName: http-service.int
 
 terminationGracePeriodSeconds: 30
 

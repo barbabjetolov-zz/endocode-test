@@ -1,0 +1,8 @@
+deploymentName: kibana-kibana
+
+ports:
+  containerPort: 5601
+
+ingress:
+  name: kibana-ingress
+  hostName: kibana.int
