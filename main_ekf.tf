@@ -37,4 +37,6 @@ resource "helm_release" "kibana" {
 resource "helm_release" "fluentd" {
     name = "fluentd"
     chart = "./fluentd-chart"
+
+	namespace = "logging"
 }
