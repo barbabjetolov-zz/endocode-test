@@ -17,7 +17,7 @@ resource "helm_release" "elasticsearch" {
 }
 
 resource "helm_release" "kibana" {
-        name = "kibana"
+    name = "kibana"
 	repository = "https://helm.elastic.co"
 	chart = "kibana"
 
@@ -43,5 +43,5 @@ resource "helm_release" "kibana-ingress" {
     name = "kibana-ingress"
     chart = "./kibana-ingress-chart"
 
-        namespace = "monitoring"
+    namespace = "monitoring"
 }
