@@ -8,8 +8,8 @@ image:
   tag: latest
 
 ports:
-  containerPort: 8081
-  listeningPort: 8081
+  containerPort: 8080
+  listeningPort: 8080
 
 ingress:
   name: nginx-ingress
