@@ -1,6 +1,6 @@
 provider "helm" {
   kubernetes {
-    host                   = "https://192.168.49.2:8443"
+    host        = "https://192.168.49.2:8443"
     config_path = "~/.kube/config"
   }
 }
