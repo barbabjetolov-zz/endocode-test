@@ -1,0 +1,42 @@
+openapi: 3.0.0
+servers: 
+    - http://localhost:8080
+info:
+    title: http-service
+    description: >-
+        simple http service that serves three endpoints
+    version: v1.0
+paths:
+    /helloworld:
+        get:
+            parameters: 
+                - name: name
+                  in: query
+                  required: false
+                  schema: 
+                    type: string
+            responses:
+                '200':
+                    description: OK
+                    content:
+                      text/plain:
+                        schema:
+                          type: string
+                          example: "Hello Stranger" 
+                '400':
+                    description: Bad request
+                '500':
+                    description: Unexpected error
+    /versionz:
+        get:
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema: 
+                                type: string
+                '400':
+                    description: Bad request
+                '500':
+                    description: Unexpected error
