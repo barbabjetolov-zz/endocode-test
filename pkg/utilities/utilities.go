@@ -47,7 +47,7 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query()
 		if len(q) > 1 {
 			status = http.StatusBadRequest
-			message = "Invalid request!"
+			message = "Invalid Request!"
 		} else if len(q) == 1 {
 			if name, isIn := q["name"]; isIn {
 
@@ -62,7 +62,7 @@ func HandlerHelloworld(w http.ResponseWriter, r *http.Request) {
 				message = "Hello " + strings.Join(camelcase.Split(name[0]), " ")
 			} else {
 				status = http.StatusBadRequest
-				message = "Invalid request!"
+				message = "Invalid Request!"
 			}
 		} else if len(q) == 0 {
 			status = http.StatusOK
