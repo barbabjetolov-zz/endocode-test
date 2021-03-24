@@ -1,2 +1,2 @@
 http-service
-bin/*
+.terraform*
