@@ -1,13 +1,3 @@
-provider "helm" {
-  kubernetes {
-    host                   = "https://192.168.49.2:8443"
-
-    client_certificate     = file("client.crt")
-    client_key             = file("client.key")
-    cluster_ca_certificate = file("ca.crt")
-  }
-}
-
 resource "helm_release" "elasticsearch" {
 	name = "elasticsearch"
 	repository = "https://helm.elastic.co"
@@ -27,7 +17,7 @@ resource "helm_release" "elasticsearch" {
 }
 
 resource "helm_release" "kibana" {
-	name = "kibana"
+        name = "kibana"
 	repository = "https://helm.elastic.co"
 	chart = "kibana"
 
@@ -39,4 +29,11 @@ resource "helm_release" "fluentd" {
     chart = "./fluentd-chart"
 
 	namespace = "logging"
+}
+
+resource "helm_release" "kibana-ingress" {
+    name = "kibana-ingress"
+    chart = "./kibana-ingress-chart"
+
+        namespace = "logging"
 }
