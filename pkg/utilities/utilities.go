@@ -105,6 +105,7 @@ func HandlerVersionz(w http.ResponseWriter, r *http.Request) {
 
 				break
 			}
+			w.Header().Set("Content-type", "application/json; charset=rtf-8")
 			status = http.StatusOK
 			message = string(resBytes)
 		}
