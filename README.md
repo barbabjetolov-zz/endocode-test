@@ -58,8 +58,11 @@ The last endpoint can be contacted with
 ```
 
 and the answer will be:
-```
-    {"git_commit":"2d23bd462aa5523a0bdcd272d4958700e3cc6eac","project_name":"http-service"}
+```json
+    {
+        "git_commit": "2d23bd462aa5523a0bdcd272d4958700e3cc6eac",
+        "project_name": "http-service"
+    }
 ```
 
 ## Deploy
@@ -68,4 +71,19 @@ This service can be deployed in an existing kubernetes cluster using the provide
 The helm chart contains templates to create a service, a deployment and an nginx-ingress that allows communication with the service. 
 
 ## Logging
-The repo has a terraform file, `main_ekf`, that contains instructions to install an EKF stack in the kubernetes cluster. It's based on the official elastic helm charts for [Kibana](https://github.com/elastic/helm-charts/tree/6.5.2-alpha1/kibana) and [Elasticsearch](https://github.com/elastic/helm-charts/blob/6.5.2-alpha1/elasticsearch/README.md), plus a custom chart for Fluentd, `fluentd-chart`. Kibana is set to be listening on the cluster port 5601, so port-forwarding is required to access the UI. 
+The repo has a terraform file, `main_ekf.tf`, that contains instructions to install an EKF stack in the kubernetes cluster. It's based on the official elastic helm charts for [Kibana](https://github.com/elastic/helm-charts/tree/6.5.2-alpha1/kibana) and [Elasticsearch](https://github.com/elastic/helm-charts/blob/6.5.2-alpha1/elasticsearch/README.md), plus custom charts for Fluentd, `fluentd-chart` and for an ingress that exposes the Kibana UI, by default on the address `http://kibana.int`. To access it, add the line `$CLUSTER_IP kibana.int` in the host `/etc/hosts` file. 
+
+## Server stub
+A configuraton file to generate a server stub is provided, `openapi.yaml`. To generate the stub run the commands:
+
+```shell
+    git clone https://github.com/openapitools/openapi-generator
+    cd openapi-generator
+    mvn clean package
+    java -jar modules/openapi-generator-cli/target/openapi-generator-cli.jar generate \
+    -i openapi.yaml \
+    -g {LANGUAGE} \
+    -o /var/tmp/php_api_client
+```
+
+There are several `LANGUAGE` choices, check the [openapi-generator github page](https://github.com/OpenAPITools/openapi-generator) for a complete list.
