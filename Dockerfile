@@ -21,7 +21,7 @@ RUN chmod 111 http-service
 # ENTRYPOINT [ "/http-service" ]
 
 #-------------------#
-FROM alpine:latest
+FROM scratch
 
 COPY --from=builder /http-service /http-service
 
