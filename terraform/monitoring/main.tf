@@ -1,3 +1,9 @@
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
 resource "helm_release" "elasticsearch" {
 	name = "elasticsearch"
 	repository = "https://helm.elastic.co"
@@ -34,14 +40,14 @@ resource "helm_release" "metricbeat" {
 
 resource "helm_release" "fluentd" {
     name = "fluentd"
-    chart = "./fluentd-chart"
+    chart = "../../fluentd-chart"
 
 	namespace = "monitoring"
 }
 
 resource "helm_release" "kibana-ingress" {
     name = "kibana-ingress"
-    chart = "./kibana-ingress-chart"
+    chart = "../../kibana-ingress-chart"
 
     namespace = "monitoring"
 }
