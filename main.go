@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/barbabjetolov/endocode-test/http-service/pkg/utilities"
-	"github.com/gorilla/handlers"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -33,5 +32,5 @@ func main() {
 
 	http.HandleFunc("/helloworld", utilities.HandlerHelloworld)
 	http.HandleFunc("/versionz", utilities.HandlerVersionz)
-	log.Fatal(http.ListenAndServe(":"+port, handlers.LoggingHandler(os.Stdout, http.DefaultServeMux)))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
