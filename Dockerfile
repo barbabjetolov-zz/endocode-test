@@ -15,7 +15,7 @@ RUN go mod download
 
 
 # compile binary
-RUN make compile
+RUN make http-service
 RUN chmod 111 http-service
 
 # ENTRYPOINT [ "/http-service" ]
