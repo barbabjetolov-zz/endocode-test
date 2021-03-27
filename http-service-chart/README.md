@@ -15,3 +15,4 @@ Custom chart to deploy `http-service` and relative ingress to the kubernetes clu
 |`ingress.hostName`   |name of the nginx virtual server          |`http-service.int`|
 |`resources.limits.cpu`   |maximum cpu cycles allowed for a pod |`100m` |
 |`resources.limits.memory`|maximum memory allowed for a pod     |`128Mi`|
+|`terminationGracePeriodSeconds`|grace period for pod termination, in seconds|`30`|
