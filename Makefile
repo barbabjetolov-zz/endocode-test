@@ -19,14 +19,10 @@ CGO=0
 ENV_VARS=GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=${CGO}
 
 # local install
-clean:
-	go clean
-	-rm -rf ${TARGET_BIN}
-
-install: clean
+install: 
 	go mod download
 
-compile: install
+${TARGET_BIN}: install
 	env ${ENV_VARS} go build -ldflags "	-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.ProjectName=${PROJECT_NAME} \
 										-X github.com/barbabjetolov/endocode-test/http-service/pkg/utilities.GitCommit=${GIT_COMMIT}"	\
 										-o ${TARGET_BIN}
@@ -41,7 +37,7 @@ test:
 										./${PKGDIR}/${TARGET_PACKAGE} 
 
 
-all: test compile run
+all: test ${TARGET_BIN}
 
 
 #docker
