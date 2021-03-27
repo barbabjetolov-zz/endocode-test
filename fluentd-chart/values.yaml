@@ -1,12 +1,11 @@
 deploymentName: fluentd
-namespace: logging
+namespace: monitoring
 
 terminationGracePeriodSeconds: 30
 
 daemonSet:
   env:
-    elasticsearchHost: elasticsearch-master.logging.svc.cluster.local
+    elasticsearchHost: elasticsearch-master.monitoring.svc.cluster.local
     elasticsearchPort: 9200
     elasticsearchScheme: http
-    fluentdSystemdConf: disable
 
