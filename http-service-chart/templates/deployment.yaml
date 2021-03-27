@@ -18,6 +18,8 @@ spec:
       - name: {{ .Values.deploymentName }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }} # the tag is passed from cli in jenkins
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         ports:
         - containerPort: {{ .Values.ports.containerPort }}
         env:
