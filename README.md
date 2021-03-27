@@ -1,33 +1,32 @@
 # endocode-test
 
-This repo contains a small application, `http-service`, written in Golang that serves few HTTP endpoints, and the scripts (jenkinsfile + helm chart + terraform plan) needed to automate its deployment in an existing kubernetes cluster.
+This repo contains a small application, `http-service`, written in Golang that serves few HTTP endpoints, and the scripts (jenkinsfile + helm chart + terraform plan) needed to automate its deployment in an existing kubernetes cluster. Plus, it contains helm charts to deploy an EKF + metricbeat stack to monitor metrics and logs.
 
 # http-service
 
 `http-service` is a simple golang application that serves HTTP requests. 
 
-## Requirements
-
-#### OS requirements
+## OS Requirements
 * macOs, Linux
 
-#### with docker
-* docker
-#### local install
-* go 1.13 or newer
+## Building and running with docker
+This method requires a machine with docker. To run the service in a docker container, simply run `make docker`: dockerd will automatically build an image from the provided Dockerfile and run it with the option `-d`. By default, it listens to the port 8080. This value can be changed by setting the `HOST_PORT` variable. For example, if one would want the service to isten to the port 8081, the command would be:
+
+```shell
+make docker HOST_PORT=8081
+```
+
+## local install
+#### Requirements
 * make
+* golang 1.13 or newer
+* git
 
-## Building and running
-
-#### docker
-To build a docker image simply run `make docker`: this will build and run a container that contains the application. By default it listens from the 8080 port.
-
-#### local install
-To compile the source code run `make compile`, it will take care of the dependencies.  To run it, launch `make run`. As noted before, by default the service listens from the 8080 port, but it can be changed by setting the environment variable `LISTENING_PORT`.
+To compile the source code run `make http-service`, the dependencies will be taken care of. To execute it, simply run `make run`; this will start the service, by default listening on the port 8080. To change it, export the variable `LISTENING_PORT` and set it equal to a port you'd liek the service to listen on. 
 
 ## Usage
 
-The service listens accepts two endpoints:
+The service accepts two endpoints:
 
 * **GET /helloworld** - returns "Hello Stranger". It accepts one query parameter, `name`. If set, it returns "Hello $name", sliced by camel case
 * **GET /versionz** - returns a JSON with the hash of the latest commit and the project name
@@ -66,12 +65,16 @@ and the answer will be:
 ```
 
 ## Deploy
-This service can be deployed in an existing kubernetes cluster using the provided jenkinsfile. The cluster IP has to be set manually in the `main.tf` file.
-
-The helm chart contains templates to create a service, a deployment and an nginx-ingress that allows communication with the service. 
+This service can be deployed in an existing kubernetes cluster using the provided jenkinsfile, it relies on terraform. The `main.tf` contains all the instructions terraform needs to deploy the service inside the kubernetes cluster; it's based on an helm chart, `http-service-chart` that deploys the service plus an nginx ingress, that allows communication with the service from outside the cluster. By default, the host name to contact the service with is `http-service.int`, but to make the connection possible, the line `$CLUSTER_IP http-service.int` has to be appended to the host `/etc/hosts` file (**N.B.** $CLUSTER_IP is a placeholder, it stands in for the actual cluster ip, obtainable with the command `kubectl cluster-info`). 
 
 ## Logging
-The repo has a terraform file, `main_ekf.tf`, that contains instructions to install an EKF stack in the kubernetes cluster. It's based on the official elastic helm charts for [Kibana](https://github.com/elastic/helm-charts/tree/6.5.2-alpha1/kibana) and [Elasticsearch](https://github.com/elastic/helm-charts/blob/6.5.2-alpha1/elasticsearch/README.md), plus custom charts for Fluentd, `fluentd-chart` and for an ingress that exposes the Kibana UI, by default on the address `http://kibana.int`. To access it, add the line `$CLUSTER_IP kibana.int` in the host `/etc/hosts` file. 
+There is another terraform file, `terraform/monitoring/main.tf`, it contains instructions to install an EKF stack + metricbeat in the kubernetes cluster. It's based on the official elastic helm charts for [Kibana](https://github.com/elastic/helm-charts/tree/6.5.2-alpha1/kibana), [Elasticsearch](https://github.com/elastic/helm-charts/tree/6.5.2-alpha1/elasticsearch) and [metricbeat](https://github.com/elastic/helm-charts/tree/master/metricbeat). They require the official repo to be addedd:
+
+```shell
+    helm repo add elastic https://helm.elastic.co
+```
+
+and on a custom charts for Fluentd, `fluentd-chart`. It deploys also an nginx ingress that allows acces to the Kibana UI, by default at the address `http://kibana.int`. To access it, add the line `$CLUSTER_IP kibana.int` in the host `/etc/hosts` file. 
 
 ## Server stub
 A configuraton file to generate a server stub is provided, `openapi.yaml`. To generate the stub run the commands:
@@ -82,8 +85,8 @@ A configuraton file to generate a server stub is provided, `openapi.yaml`. To ge
     mvn clean package
     java -jar modules/openapi-generator-cli/target/openapi-generator-cli.jar generate \
     -i openapi.yaml \
-    -g {LANGUAGE} \
+    -g $LANGUAGE \
     -o /var/tmp/php_api_client
 ```
 
-There are several `LANGUAGE` choices, check the [openapi-generator github page](https://github.com/OpenAPITools/openapi-generator) for a complete list.
+There are several `$LANGUAGE` choices, check the [openapi-generator github page](https://github.com/OpenAPITools/openapi-generator) for a complete list.
