@@ -1,6 +1,9 @@
 # endocode-test
 
-This repo contains a small application, `http-service`, written in Golang that serves few HTTP endpoints, and the scripts (jenkinsfile + helm chart + terraform plan) needed to automate its deployment in an existing kubernetes cluster. Plus, it contains helm charts to deploy an EKF + metricbeat stack to monitor metrics and logs.
+This repo contains: 
+* `http-service`, a small application written in Golang that serves few HTTP endpoints
+* scripts (jenkinsfile + helm chart + terraform) to automate the deployment of the application in an existing kubernetes cluster
+* helm charts to deploy and EKF + metricbeat stack for logging and monitoring
 
 # http-service
 
