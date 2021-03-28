@@ -10,7 +10,6 @@ node {
 
     def IMAGE
 
-    def GIT_COMMIT
     def PROJECT_NAME="${env.SERVICE}"
     def TAG = env.TAG
 
@@ -27,8 +26,6 @@ node {
     stage('Clone repository') {               
 
         checkout scm
-
-        GIT_COMMIT = sh(script: 'git rev-list -1 HEAD', returnStdout: true)
 
     }
 
