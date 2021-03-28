@@ -71,6 +71,15 @@ node {
         }
     }
 
+    stage('Non-regression tests') {
+
+        STATUS = sh(script: "./http-tests.sh", returnStatus: true)
+
+        if (STATUS != 0) {
+            error("Non-regression tests failed! Aborting")
+        }
+    }
+
     // clean workspace at the end of operations
     cleanWs()
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENDPOINT="http://localhost:8080"
+ENDPOINT="http://http-service.int"
 PROJECT_NAME="http-service"
 GIT_COMMIT=$(git rev-list -1 HEAD)
 PASSED=true
