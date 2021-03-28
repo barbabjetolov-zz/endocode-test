@@ -1,4 +1,5 @@
 FROM golang:alpine AS builder
+LABEL image=builder
 
 # download necessary packages
 RUN apk add git make

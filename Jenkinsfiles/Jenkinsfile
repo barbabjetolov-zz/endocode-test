@@ -54,6 +54,9 @@ node {
         
             docker.build("erizzardi/${env.SERVICE}").push("${TAG}")
         }
+
+        // to remove intermediate image
+        sh "docker prune --filter label=image=builder"
     }
 
     // deploy service to k8 cluster - requires authentication!
